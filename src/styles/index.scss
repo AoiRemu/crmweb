@@ -62,4 +62,41 @@ div:focus {
 // main-container global css
 .app-container {
   padding: 20px;
+
+
+  .query_warp{
+
+    .nav_warp{
+      display: flex;
+      justify-content: right;
+    }
+
+    .query_form{
+      margin-top: 10px;
+
+    }
+  }
+
+  .table_warp{
+
+    .header_warp{
+      margin: 10px 0;
+      .btn_warp{
+        display: flex;
+        justify-content: right;
+      }
+    }
+    .table_pagination{
+      margin-top: 10px;
+      text-align: right;
+    }
+  }
+
+  .form_warp{
+
+    .btn_warp{
+      display: flex;
+      justify-content: right;
+    }
+  }
 }
