@@ -7,3 +7,10 @@ export function GetTable(params) {
     params: params
   })
 }
+
+export function GetDetail(id) {
+  return request({
+    url: `/api/Customer/${id}`,
+    method: 'get'
+  })
+}

@@ -1,12 +1,110 @@
 <template>
-  <div>
-    客户分组管理
+  <div class="app-container">
+    <div class="query_warp">
+      <div class="nav_warp">
+        <el-button type="primary" size="default" @click="edit(0)">添加分组</el-button>
+      </div>
+      <div class="query_form">
+        <el-form ref="form" :model="queryForm" :rules="rules" label-width="80px" :inline="true" size="normal">
+          <el-form-item label="分组名称">
+            <el-input v-model="queryForm.name" placeholder="" />
+          </el-form-item>
+          <el-form-item lable=" ">
+            <el-button type="primary" @click="getTable">查询</el-button>
+          </el-form-item>
+        </el-form>
+
+      </div>
+    </div>
+    <div class="table_warp">
+      <el-table v-loading="loading" :data="tableData" border stripe>
+        <el-table-column type="index" label="序号" width="80" />
+        <el-table-column prop="name" label="名称" />
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <div>
+              <el-button type="text" size="default" @click="edit(scope.row.id)">编辑</el-button>
+              <el-button type="text" size="default" @click="remove(scope.row.id)">删除</el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+
+      <el-pagination
+        class="table_pagination"
+        :current-page.sync="queryForm.pageIndex"
+        :page-sizes="[10, 30, 50, 100]"
+        :page-size="queryForm.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        background
+        :pager-count="7"
+        @size-change="sizeChange"
+        @current-change="getTable"
+      />
+    </div>
+
+    <el-dialog
+      title="添加分组"
+      :visible.sync="visible"
+      width="20%"
+      :close-on-click-modal="false"
+      :destroy-on-close="true"
+      @close="visible = false"
+    >
+      <Edit :id="id" ref="Edit" @closeDialog="visible = false" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
+import { GetTableData } from '@/api/group'
+import Edit from './edit.vue'
 export default {
+  components: {
+    Edit
+  },
+  data() {
+    return {
+      queryForm: {
+        name: '',
+        pageSize: 10,
+        pageIndex: 1
+      },
+      rules: {},
+      tableData: [],
+      total: 0,
+      loading: false,
 
+      visible: false,
+      id: 0
+    }
+  },
+  created() {
+    this.getTable()
+  },
+  methods: {
+    getTable() {
+      this.loading = true
+      GetTableData().then(res => {
+        this.tableData = res.data.data
+        this.total = res.data.total
+      }).finally(() => {
+        this.loading = false
+      })
+    },
+    sizeChange(val) {
+      this.queryForm.pageSize = val
+      this.getTable()
+    },
+    edit(id) {
+      this.id = id
+      this.visible = true
+    },
+    remove(id) {
+
+    }
+  }
 }
 </script>
 

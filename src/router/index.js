@@ -62,20 +62,36 @@ export const constantRoutes = [
     meta: { title: '客户列表', icon: 'el-icon-user-solid' },
     children: [
       {
-        path: 'index',
+        path: 'index/:type?',
         name: 'index',
         meta: { title: '所有客户' },
+        hidden: true,
         component: () => import('@/views/customer/index')
       },
       {
-        path: 'groupIndex',
-        name: 'groupIndex',
+        path: 'all',
+        name: 'all',
+        redirect: 'index/0',
+        meta: { title: '所有客户' },
+        component: () => import('@/views/customer/index')
+      },
+      // {
+      //   path: 'groupIndex',
+      //   name: 'groupIndex',
+      //   meta: { title: '意向客户' },
+      //   component: () => import('@/views/customer/groupIndex')
+      // },
+      {
+        path: 'right',
+        name: 'right',
+        redirect: 'index/1',
         meta: { title: '意向客户' },
-        component: () => import('@/views/customer/groupIndex')
+        component: () => import('@/views/customer/index')
       },
       {
         path: 'sea',
         name: 'sea',
+        redirect: 'index/2',
         meta: { title: '公海' },
         component: () => import('@/views/customer/index')
       }
