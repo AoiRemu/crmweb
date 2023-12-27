@@ -31,6 +31,10 @@ export default {
     customerid: {
       type: Number,
       default: 0
+    },
+    max: {
+      type: [Number, String],
+      default: ''
     }
   },
   data() {
@@ -58,7 +62,11 @@ export default {
     getTable() {
       this.loading = true
       GetFollowTableData(this.customerid).then(res => {
-        this.tableData = res.data.data
+        if (this.max) {
+          this.tableData = res.data.data.slice(0, this.max)
+        } else {
+          this.tableData = res.data.data
+        }
         this.total = res.data.total
       }).finally(() => {
         this.loading = false

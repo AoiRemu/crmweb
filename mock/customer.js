@@ -1,11 +1,18 @@
 const Mock = require('mockjs')
-const Global = require('@/utils/global')
+// const Global = require('@/utils/global')
+const FollowStep = [
+  { id: 1, name: '新入库' },
+  { id: 2, name: '意向客户' },
+  { id: 4, name: '邀约上门' },
+  { id: 5, name: '已签约' },
+  { id: 6, name: '已放款' }
+]
 
 const tableData = Mock.mock({
   'data|100': [{
     id: '@increment(1)',
     name: '@cname',
-    'follow_state|1': ['新入库', '产生意向', '可跟进客户', '邀约上门', '合作客户'],
+    'follow_state|1': FollowStep.map(ele => ele.name),
     ctime: '@datetime',
     phone: '@integer(13100000000, 13199999999)',
     address: '@county(true)',
@@ -14,7 +21,12 @@ const tableData = Mock.mock({
     follow_account: '@cname',
     level: '@integer(1,5)',
     state: '@integer(1,3)',
-    groupId: '@integer(1,4)'
+    groupId: '@integer(1,4)',
+    'tags|1-5': [{
+      id: '@increment(1)',
+      name: '@cname'
+    }],
+    qualification: '@cparagraph(1,3)'
   }]
 })
 
@@ -51,7 +63,7 @@ module.exports = [
           name: '@cname',
           level: '@integer(1,5)',
           'follow_state|1': '@integer(1,5)',
-          'follow_state_desc|1': ['新入库', '产生意向', '可跟进客户', '邀约上门', '合作客户'],
+          'follow_state_desc|1': FollowStep.map(ele => ele.name),
           ctime: '@datetime',
           phone: '@integer(13100000000, 13199999999)',
           address: '@county(true)',
@@ -69,7 +81,8 @@ module.exports = [
           industry: '',
           workAddress: '@county(true)',
           netAddress: '',
-          description: ''
+          description: '',
+          qualification: '@cparagraph(1,3)'
         }
       }
     }
@@ -90,7 +103,7 @@ module.exports = [
     url: '/api/Follow/Step',
     type: 'get',
     response: config => {
-      const { FollowStep } = Global
+      // const { FollowStep } = Global
       const result = Mock.mock({
         'data': FollowStep
       })

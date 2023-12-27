@@ -43,6 +43,9 @@
               <el-form-item label="地址" prop="address">
                 <el-input v-model="form.address" placeholder="请输入地址" />
               </el-form-item>
+              <el-form-item label="资质" prop="qualification">
+                <el-input v-model="form.qualification" type="textarea" placeholder="请输入资质" />
+              </el-form-item>
             </div>
           </el-collapse-item>
           <el-collapse-item title="详细信息" name="2">
@@ -108,7 +111,8 @@ export default {
         workAddress: '',
         netAddress: '',
         address: '',
-        description: ''
+        description: '',
+        qualification: ''
       },
       rules: {},
       activeNames: ['1']

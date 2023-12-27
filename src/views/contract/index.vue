@@ -19,7 +19,7 @@
         <el-table-column prop="state" label="状态" />
         <el-table-column prop="accountName" label="经理人" />
         <el-table-column prop="price" label="金额" />
-        <el-table-column prop="cost" label="成本" />
+        <el-table-column prop="signTime" label="签约时间" />
         <el-table-column label="操作">
           <template slot-scope="scope">
             <div>

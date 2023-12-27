@@ -37,7 +37,21 @@
       </div>
       <el-table ref="table" :data="tableData" border stripe>
         <el-table-column type="selection" width="55" />
-        <el-table-column label="客户全名" prop="name" />
+        <el-table-column label="客户全名" prop="name" width="120px">
+          <template slot-scope="scope">
+            <div>
+              <el-popover placement="right" trigger="hover">
+                <AvatarCard :key="scope.row.id" v-model="scope.row" class="card_item" />
+                <div slot="reference" class="avatar_warp">
+                  <el-avatar icon="el-icon-user-solid" :size="24" shape="circle" fit="fill" />
+                  <div class="avatar_right">
+                    <div class="customer_name">{{ scope.row.name }}</div>
+                  </div>
+                </div>
+              </el-popover>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="客户分组" prop="groupName">
           <template slot-scope="scope">
             <div>
@@ -45,17 +59,29 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="客户星级" prop="level">
+        <el-table-column label="客户星级" prop="level" width="140px">
           <template slot-scope="scope">
             <div>
-              <RateStar :key="scope.row.id" v-model="scope.row.level" />
+              <RateStar :key="scope.row.id" v-model="scope.row.level" :disabled="true" />
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="手机" prop="phone" />
-        <el-table-column label="地区" prop="county" />
+        <el-table-column label="手机" prop="phone">
+          <template v-slot="scope">
+            <div>
+              {{ showPhone(scope.row.phone) }}
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="标签" prop="county">
+          <template v-slot="scope">
+            <div>
+              <el-tag v-for="item in scope.row.tags" :key="item.id" type="" effect="dark">{{ item.name }}</el-tag>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="客户进展" prop="follow_state" />
-        <el-table-column label="跟进人" prop="follow_account" />
+        <el-table-column label="跟进人" prop="follow_account" width="120px" />
         <el-table-column label="创建时间" prop="ctime" />
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -117,11 +143,14 @@ import { GetTable } from '@/api/customer'
 import { GetOptions } from '@/api/group'
 import Detail from './detail.vue'
 import RateStar from '@/components/Customer/rateStar.vue'
+import { hidePhone } from '@/utils/common'
+import AvatarCard from '@/components/Customer/customerCard.vue'
 export default {
   components: {
     Info,
     Detail,
-    RateStar
+    RateStar,
+    AvatarCard
   },
   data() {
     return {
@@ -200,11 +229,27 @@ export default {
     },
     showGroupName(id) {
       return this.groupOptions.find(ele => ele.id === id)?.name
+    },
+    showPhone(phone) {
+      const result = hidePhone(phone)
+      return result
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
+.avatar_warp{
+  display: flex;
+  justify-content: left;
+  gap: 10px;
 
+  :nth-child(0), :nth-child(1){
+    cursor: pointer;
+  }
+}
+
+.card_item{
+  width:540px;
+}
 </style>

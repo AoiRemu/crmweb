@@ -65,7 +65,7 @@ export default {
 
   .star_item{
     font-size: 24px;
-    color:rgb(142, 145, 14);
+    color:#fadb14;
   }
 }
 
