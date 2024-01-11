@@ -32,5 +32,24 @@ module.exports = [
         }
       }
     }
+  },
+  {
+    url: '/api/Contract/GetCustomerContract',
+    type: 'get',
+    response: config => {
+      return {
+        data: {
+          'data|0-3': [{
+            id: '@increment(1)',
+            'state|1': ['拟定', '谈判', '已签约', '签约失败', '已放款', '审批未通过', '客户退单'],
+            ctime: '@datetime',
+            price: '@integer(1000,500000)',
+            cost: '@integer(1000,30000)',
+            accountName: '@cname',
+            signTime: '@datetime'
+          }]
+        }
+      }
+    }
   }
 ]

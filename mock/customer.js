@@ -26,7 +26,8 @@ const tableData = Mock.mock({
       id: '@increment(1)',
       name: '@cname'
     }],
-    qualification: '@cparagraph(1,3)'
+    qualification: '@cparagraph(1,3)',
+    next_follow_time: '@datetime'
   }]
 })
 

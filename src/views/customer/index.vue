@@ -76,12 +76,19 @@
         <el-table-column label="标签" prop="county">
           <template v-slot="scope">
             <div>
-              <el-tag v-for="item in scope.row.tags" :key="item.id" type="" effect="dark">{{ item.name }}</el-tag>
+              <el-tag v-for="item in scope.row.tags" :key="item.id" disable-transitions type="" effect="dark">{{ item.name }}</el-tag>
             </div>
           </template>
         </el-table-column>
         <el-table-column label="客户进展" prop="follow_state" />
         <el-table-column label="跟进人" prop="follow_account" width="120px" />
+        <el-table-column label="下次跟进时间" prop="next_follow_time">
+          <template v-slot="scope">
+            <div :class="{ itstime: itstime(scope.row.next_follow_time) }">
+              {{ scope.row.next_follow_time }}
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="创建时间" prop="ctime" />
         <el-table-column label="操作">
           <template slot-scope="scope">
@@ -233,6 +240,10 @@ export default {
     showPhone(phone) {
       const result = hidePhone(phone)
       return result
+    },
+    itstime(time) {
+      const now = new Date()
+      return now >= time
     }
   }
 }
@@ -251,5 +262,9 @@ export default {
 
 .card_item{
   width:540px;
+}
+
+.itstime{
+  color: red;
 }
 </style>

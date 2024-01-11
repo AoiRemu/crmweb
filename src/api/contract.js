@@ -8,3 +8,10 @@ export function GetTableData(params) {
   })
 }
 
+export function GetCustomerContract(id) {
+  return request({
+    url: `/api/Contract/GetCustomerContract/${id}`,
+    method: 'get'
+  })
+}
+

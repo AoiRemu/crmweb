@@ -52,9 +52,20 @@
         <Info :id="id" ref="Info" />
       </el-tab-pane>
       <el-tab-pane label="合同状况" name="contract">
-        合同状况
+        <Contract :customerid="id" />
       </el-tab-pane>
     </el-tabs>
+
+    <el-dialog
+      title="选择标签"
+      :visible.sync="tagVisible"
+      width="30%"
+      append-to-body
+      @close="tagVisible = false"
+    >
+      <AddTag :customer-tags="tagList" @closeDialog="tagVisible = false" />
+    </el-dialog>
+
   </div>
 </template>
 
@@ -65,11 +76,15 @@ import { GetFollowStep } from '@/api/follow'
 import Follow from './follow/index.vue'
 import EditFollow from './follow/edit.vue'
 import Info from './info.vue'
+import AddTag from './components/addTag'
+import Contract from './components/contract.vue'
 export default {
   components: {
     Follow,
     EditFollow,
-    Info
+    Info,
+    AddTag,
+    Contract
   },
   props: {
     id: {
@@ -103,7 +118,8 @@ export default {
         follow_state: 0
       },
       followList: [],
-      tagList: []
+      tagList: [],
+      tagVisible: false
     }
   },
   created() {
@@ -123,7 +139,6 @@ export default {
     },
     getTags() {
       GetCustomerTags(this.id).then(res => {
-        console.log('GetCustomerTags', res)
         this.tagList = res.data
       })
     },
@@ -134,7 +149,7 @@ export default {
       })
     },
     addTag() {
-
+      this.tagVisible = true
     }
   }
 }
