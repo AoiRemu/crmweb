@@ -15,3 +15,11 @@ export function GetCustomerContract(id) {
   })
 }
 
+export function Add(params) {
+  return request({
+    url: `/api/Contract/Add`,
+    method: 'post',
+    data: params
+  })
+}
+

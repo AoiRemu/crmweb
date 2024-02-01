@@ -3,9 +3,9 @@ const Mock = require('mockjs')
 const FollowStep = [
   { id: 1, name: '新入库' },
   { id: 2, name: '意向客户' },
-  { id: 4, name: '邀约上门' },
-  { id: 5, name: '已签约' },
-  { id: 6, name: '已放款' }
+  { id: 3, name: '邀约上门' },
+  { id: 4, name: '已签约' },
+  { id: 5, name: '已放款' }
 ]
 
 const tableData = Mock.mock({
@@ -55,7 +55,7 @@ module.exports = [
     }
   },
   {
-    url: '/api/Customer/[1-9]+',
+    url: '/api/Customer/GetDetail/[1-9]+',
     type: 'get',
     response: config => {
       return {
@@ -204,6 +204,17 @@ module.exports = [
             ctime: '@datetime'
           }]
         })
+      }
+    }
+  },
+  {
+    url: '/api/Customer/UpdateStar',
+    type: 'post',
+    response: config => {
+      return {
+        code: 200,
+        message: '更新评级成功',
+        data: ''
       }
     }
   }

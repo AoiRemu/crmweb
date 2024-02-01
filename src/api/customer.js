@@ -10,7 +10,15 @@ export function GetTable(params) {
 
 export function GetDetail(id) {
   return request({
-    url: `/api/Customer/${id}`,
+    url: `/api/Customer/GetDetail/${id}`,
     method: 'get'
+  })
+}
+
+export function UpdateStar(id, params) {
+  return request({
+    url: `/api/Customer/UpdateStar/${id}`,
+    method: 'post',
+    data: params
   })
 }

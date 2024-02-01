@@ -1,7 +1,7 @@
 <template>
   <div class="star_warp">
     <div v-for="(item,index) in starList" :key="key+index" class="star_item" @click="save(index)">
-      <i :key="key+item" :class="item == 1 ? lightClass : darkClass" />
+      <i :class="getClass(index)" />
     </div>
 
   </div>
@@ -32,27 +32,33 @@ export default {
       key: new Date()
     }
   },
+  watch: {
+    value(newValue, oldValue) {
+      this.init()
+    }
+  },
   created() {
     this.init()
   },
   methods: {
+    getClass(index) {
+      if (index < this.value) {
+        return this.lightClass
+      } else {
+        return this.darkClass
+      }
+    },
     save(index) {
-      if (this.disabled) {
-        return
-      }
-
-      for (let i = 0; i < this.starList.length; i++) {
-        const result = i <= index ? 1 : 0
-        this.starList[i] = result
-      }
-      console.log('starList', this.starList)
-      this.$emit('input', index)
+      this.$emit('input', index + 1)
       this.key = new Date()
+      if (this.$listeners.save) {
+        this.$emit('save')
+      }
     },
     init() {
-      this.starList = new Array(this.count).fill(0)
+      this.starList = new Array(this.count).fill(false)
       for (let index = 0; index < this.value; index++) {
-        this.starList[index] = 1
+        this.starList[index] = true
       }
     }
   }
@@ -66,6 +72,7 @@ export default {
   .star_item{
     font-size: 24px;
     color:#fadb14;
+    cursor: pointer;
   }
 }
 

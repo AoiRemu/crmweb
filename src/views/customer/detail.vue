@@ -12,6 +12,10 @@
     </div>
     <el-tabs v-model="activeName" tab-position="top" @tab-click="tabChangeHandler">
       <el-tab-pane label="首页" name="home">
+        <div class="star_warp">
+          <h5>客户星级</h5>
+          <RateStar v-model="customerForm.level" @save="saveLevel" />
+        </div>
         <div class="tag_warp">
           <h5>标签</h5>
           <el-button class="add_tag" size="small" icon="el-icon-plus" @click="addTag" />
@@ -70,7 +74,7 @@
 </template>
 
 <script>
-import { GetDetail } from '@/api/customer'
+import { GetDetail, UpdateStar } from '@/api/customer'
 import { GetCustomerTags } from '@/api/tag'
 import { GetFollowStep } from '@/api/follow'
 import Follow from './follow/index.vue'
@@ -78,13 +82,15 @@ import EditFollow from './follow/edit.vue'
 import Info from './info.vue'
 import AddTag from './components/addTag'
 import Contract from './components/contract.vue'
+import RateStar from '@/components/Customer/rateStar.vue'
 export default {
   components: {
     Follow,
     EditFollow,
     Info,
     AddTag,
-    Contract
+    Contract,
+    RateStar
   },
   props: {
     id: {
@@ -99,6 +105,7 @@ export default {
       customerForm: {
         name: '',
         gender: 'unknown',
+        level: 0,
         birthday: '',
         source: '',
         group: '',
@@ -150,6 +157,16 @@ export default {
     },
     addTag() {
       this.tagVisible = true
+    },
+    saveLevel() {
+      const params = {
+        level: this.customerForm.level
+      }
+      UpdateStar(this.id, params).then(res => {
+        if (res.code !== 200) {
+          this.$message.error(res.message)
+        }
+      })
     }
   }
 }

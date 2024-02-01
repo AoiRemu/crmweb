@@ -75,7 +75,7 @@
         </el-table-column>
         <el-table-column label="标签" prop="county">
           <template v-slot="scope">
-            <div>
+            <div class="tag_warp">
               <el-tag v-for="item in scope.row.tags" :key="item.id" disable-transitions type="" effect="dark">{{ item.name }}</el-tag>
             </div>
           </template>
@@ -266,5 +266,9 @@ export default {
 
 .itstime{
   color: red;
+}
+
+.tag_warp{
+
 }
 </style>

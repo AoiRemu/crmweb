@@ -1,5 +1,8 @@
 <template>
   <div class="contract_warp">
+    <div class="btn_warp">
+      <el-button type="primary" @click="add">新增合同</el-button>
+    </div>
     <div v-if="tableData.length === 0">暂无合同</div>
     <el-timeline v-else :reverse="false">
       <el-timeline-item
@@ -21,12 +24,25 @@
         </el-card>
       </el-timeline-item>
     </el-timeline>
+    <el-dialog
+      title="新增合同"
+      :visible.sync="visible"
+      width="480px"
+      append-to-body
+      @close="visible = false"
+    >
+      <Edit :customerid="customerid" @getTable="getTable" @closeDialog="visible = false" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { GetCustomerContract } from '@/api/contract'
+import Edit from '@/views/contract/edit.vue'
 export default {
+  components: {
+    Edit
+  },
   props: {
     customerid: {
       type: Number,
@@ -40,7 +56,8 @@ export default {
         pageIndex: 1
       },
       tableData: [],
-      total: 0
+      total: 0,
+      visible: false
     }
   },
   computed: {
@@ -62,6 +79,9 @@ export default {
       }).finally(() => {
         this.loading = false
       })
+    },
+    add() {
+      this.visible = true
     }
   }
 }
@@ -69,6 +89,11 @@ export default {
 
 <style lang="scss" scoped>
 .contract_warp{
+  .btn_warp{
+    display: flex;
+    justify-content: right;
+    margin-bottom: 20px;
+  }
   ::v-deep .el-timeline{
     padding-left: 0;
   }

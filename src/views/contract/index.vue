@@ -18,7 +18,7 @@
         <el-table-column type="index" label="序号" width="80" />
         <el-table-column prop="state" label="状态" />
         <el-table-column prop="accountName" label="经理人" />
-        <el-table-column prop="price" label="金额" />
+        <el-table-column prop="amount" label="金额" />
         <el-table-column prop="signTime" label="签约时间" />
         <el-table-column label="操作">
           <template slot-scope="scope">
