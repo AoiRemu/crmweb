@@ -6,45 +6,45 @@
           <el-collapse-item title="基础信息" name="1">
             <div>
               <el-form-item label="名称" prop="name">
-                <el-input v-model="form.name" placeholder="请输入客户名称" />
+                <el-input v-model="form.main.name" placeholder="请输入客户名称" />
               </el-form-item>
               <el-form-item label="性别" prop="gender">
-                <el-radio v-model="form.gender" label="male">男</el-radio>
-                <el-radio v-model="form.gender" label="female">女</el-radio>
-                <el-radio v-model="form.gender" label="unknown">未知</el-radio>
+                <el-radio v-model="form.main.gender" label="male">男</el-radio>
+                <el-radio v-model="form.main.gender" label="female">女</el-radio>
+                <el-radio v-model="form.main.gender" label="unknown">未知</el-radio>
               </el-form-item>
               <el-form-item label="星级" prop="level">
-                <el-input v-model="form.level" placeholder="请输入星级" />
+                <el-input v-model="form.main.level" placeholder="请输入星级" />
               </el-form-item>
 
               <el-form-item label="来源" prop="source">
-                <el-input v-model="form.source" placeholder="请输入来源" />
+                <el-input v-model="form.main.source" placeholder="请输入来源" />
               </el-form-item>
               <el-form-item label="分组" prop="group">
-                <el-input v-model="form.group" placeholder="请选择分组" />
+                <el-input v-model="form.main.group" placeholder="请选择分组" />
               </el-form-item>
 
               <el-form-item label="微信" prop="wechat">
-                <el-input v-model="form.wechat" placeholder="请输入微信" />
+                <el-input v-model="form.main.wechat" placeholder="请输入微信" />
               </el-form-item>
               <el-form-item label="QQ" prop="qq">
-                <el-input v-model="form.qq" placeholder="请输入QQ" />
+                <el-input v-model="form.main.qq" placeholder="请输入QQ" />
               </el-form-item>
               <el-form-item label="手机" prop="phone">
-                <el-input v-model="form.phone" placeholder="请输入手机" />
+                <el-input v-model="form.main.phone" placeholder="请输入手机" />
               </el-form-item>
               <el-form-item label="座机" prop="telphone">
-                <el-input v-model="form.telphone" placeholder="请输入座机" />
+                <el-input v-model="form.main.telphone" placeholder="请输入座机" />
               </el-form-item>
               <el-form-item label="地区" prop="county">
-                <el-input v-model="form.county" placeholder="请输入地区" />
+                <el-input v-model="form.main.county" placeholder="请输入地区" />
               </el-form-item>
 
               <el-form-item label="地址" prop="address">
-                <el-input v-model="form.address" placeholder="请输入地址" />
+                <el-input v-model="form.main.address" placeholder="请输入地址" />
               </el-form-item>
               <el-form-item label="资质" prop="qualification">
-                <el-input v-model="form.qualification" type="textarea" placeholder="请输入资质" />
+                <el-input v-model="form.main.qualification" type="textarea" placeholder="请输入资质" />
               </el-form-item>
             </div>
           </el-collapse-item>
@@ -52,22 +52,22 @@
             <!-- content -->
             <div>
               <el-form-item label="生日" prop="birthday">
-                <el-input v-model="form.birthday" placeholder="请输入生日" />
+                <el-input v-model="form.info.birthday" placeholder="请输入生日" />
               </el-form-item>
               <el-form-item label="职务" prop="position">
-                <el-input v-model="form.position" placeholder="请输入职务" />
+                <el-input v-model="form.info.position" placeholder="请输入职务" />
               </el-form-item>
               <el-form-item label="行业" prop="industry">
-                <el-input v-model="form.industry" placeholder="请输入行业" />
+                <el-input v-model="form.info.industry" placeholder="请输入行业" />
               </el-form-item>
               <el-form-item label="工作单位" prop="workAddress">
-                <el-input v-model="form.workAddress" placeholder="请输入工作单位" />
+                <el-input v-model="form.info.workAddress" placeholder="请输入工作单位" />
               </el-form-item>
               <el-form-item label="网址" prop="netAddress">
-                <el-input v-model="form.netAddress" placeholder="请输入网址" />
+                <el-input v-model="form.info.netAddress" placeholder="请输入网址" />
               </el-form-item>
               <el-form-item label="备注" prop="description">
-                <el-input v-model="form.description" placeholder="请输入备注" />
+                <el-input v-model="form.info.description" placeholder="请输入备注" />
               </el-form-item>
             </div>
           </el-collapse-item>
@@ -94,25 +94,29 @@ export default {
   data() {
     return {
       form: {
-        name: '',
-        gender: 'unknown',
-        level: '',
-        birthday: '',
-        source: '',
-        group: '',
-        position: '',
-        wechat: '',
-        qq: '',
-        phone: '',
-        telphone: '',
-        email: '',
-        county: '',
-        industry: '',
-        workAddress: '',
-        netAddress: '',
-        address: '',
-        description: '',
-        qualification: ''
+        main: {
+          name: '',
+          gender: 'unknown',
+          level: '',
+          source: '',
+          group: '',
+          wechat: '',
+          qq: '',
+          phone: '',
+          telphone: '',
+          email: '',
+          county: '',
+          address: '',
+          qualification: ''
+        },
+        info: {
+          birthday: '',
+          position: '',
+          industry: '',
+          workAddress: '',
+          netAddress: '',
+          description: ''
+        }
       },
       rules: {},
       activeNames: ['1']

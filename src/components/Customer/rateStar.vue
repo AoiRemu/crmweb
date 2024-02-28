@@ -49,6 +49,9 @@ export default {
       }
     },
     save(index) {
+      if (this.disabled) {
+        return false
+      }
       this.$emit('input', index + 1)
       this.key = new Date()
       if (this.$listeners.save) {

@@ -270,5 +270,9 @@ export default {
 
 .tag_warp{
 
+  ::v-deep .el-tag {
+    margin-bottom: 5px;
+  }
+
 }
 </style>

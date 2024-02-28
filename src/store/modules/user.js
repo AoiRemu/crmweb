@@ -6,7 +6,10 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    account: '',
+    id: '',
+    roles: []
   }
 }
 
@@ -24,6 +27,12 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_USREINFO: (state, userInfo) => {
+    state.name = userInfo.name
+    state.account = userInfo.account
+    state.id = userInfo.id
+    state.roles = userInfo.roles
   }
 }
 
@@ -32,10 +41,15 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password }).then(response => {
+      login({ account: username.trim(), password: password }).then(response => {
+        console.log(response)
+        if (!response.isSuccess) {
+          reject(response.message)
+        }
         const { data } = response
         commit('SET_TOKEN', data.token)
         setToken(data.token)
+        commit('SET_USREINFO', data.userInfo)
         resolve()
       }).catch(error => {
         reject(error)
@@ -47,6 +61,7 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {
+        // todo 解析token参数
         const { data } = response
 
         if (!data) {
@@ -54,7 +69,6 @@ const actions = {
         }
 
         const { name, avatar } = data
-
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
         resolve(data)
