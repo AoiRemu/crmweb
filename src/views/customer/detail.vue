@@ -4,9 +4,9 @@
       <el-avatar icon="el-icon-user-solid" :size="72" shape="circle" fit="fill" />
       <div class="avatar_right">
         <div class="customer_name">{{ customerForm.name }}</div>
-        <div class="follow_account">
+        <div class="followAccount">
           <span>跟进人：</span>
-          <span>{{ customerForm.follow_account }}</span>
+          <span>{{ customerForm.followAccount }}</span>
         </div>
       </div>
     </div>
@@ -25,30 +25,29 @@
           <div class="title_warp">
             <h5>客户进展</h5>
             <div>
-              <el-select v-model="customerForm.follow_state" size="small">
+              <el-select v-model="customerForm.followState" size="small" @change="setStep">
                 <el-option
                   v-for="item in followStepData"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
                 />
               </el-select>
-
             </div>
           </div>
-          <el-steps :active="customerForm.follow_state" direction="horizontal" finish-status="success" process-status="wait">
+          <el-steps :active="customerForm.followState + 1" direction="horizontal" finish-status="success" process-status="wait">
             <el-step
               v-for="item in followStepData"
-              :key="item.id"
-              :title="item.name"
-              @click="setStep(item.id)"
+              :key="item.value"
+              :title="item.label"
+              @click="setStep(item.value)"
             />
           </el-steps>
 
         </div>
         <div class="follow_warp">
           <h5>跟进记录</h5>
-          <EditFollow ref="EditFollow" :customerid="id" />
+          <EditFollow ref="EditFollow" :customerid="id" @getFollowTable="getFollowTable" />
           <Follow ref="Follow" :customerid="id" />
         </div>
       </el-tab-pane>
@@ -65,6 +64,7 @@
       :visible.sync="tagVisible"
       width="30%"
       append-to-body
+      :close-on-click-modal="false"
       @close="tagVisible = false"
     >
       <AddTag :customer-tags="tagList" @closeDialog="tagVisible = false" />
@@ -74,9 +74,8 @@
 </template>
 
 <script>
-import { GetDetail, UpdateStar } from '@/api/customer'
-import { GetCustomerTags } from '@/api/tag'
-import { GetFollowStep } from '@/api/follow'
+import { GetDetail, UpdateStar, GetFollowStep, UpdateFollowState } from '@/api/customer'
+import { GetCustomerTagList } from '@/api/customerTag'
 import Follow from './follow/index.vue'
 import EditFollow from './follow/edit.vue'
 import Info from './info.vue'
@@ -106,23 +105,8 @@ export default {
         name: '',
         gender: 'unknown',
         level: 0,
-        birthday: '',
-        source: '',
-        group: '',
-        position: '',
-        wechat: '',
-        qq: '',
-        phone: '',
-        telphone: '',
-        email: '',
-        county: '',
-        industry: '',
-        workAddress: '',
-        netAddress: '',
-        address: '',
-        description: '',
-        follow_account: '',
-        follow_state: 0
+        followAccount: '',
+        followState: 0
       },
       followList: [],
       tagList: [],
@@ -137,22 +121,30 @@ export default {
   methods: {
     getDetail() {
       GetDetail(this.id).then(res => {
-        console.log(res)
-        this.customerForm = res.data
+        this.customerForm = res
       })
     },
     tabChangeHandler(val) {
       console.log(val)
     },
     getTags() {
-      GetCustomerTags(this.id).then(res => {
-        this.tagList = res.data
+      GetCustomerTagList(this.id).then(res => {
+        this.tagList = res
       })
     },
     getFollowStep() {
       GetFollowStep().then(res => {
-        console.log('GetFollowStep', res.data)
-        this.followStepData = res.data
+        this.followStepData = res
+      })
+    },
+    setStep(value) {
+      UpdateFollowState(this.id, value).then(res => {
+        if (!res.isSuccess) {
+          this.$message.error(res.message)
+          return
+        }
+
+        this.$message.success(res.message)
       })
     },
     addTag() {
@@ -160,13 +152,18 @@ export default {
     },
     saveLevel() {
       const params = {
+        id: this.id,
         level: this.customerForm.level
       }
-      UpdateStar(this.id, params).then(res => {
-        if (res.code !== 200) {
+      UpdateStar(params).then(res => {
+        if (!res.isSuccess) {
           this.$message.error(res.message)
+          return
         }
       })
+    },
+    getFollowTable() {
+      this.$refs.Follow.getTable()
     }
   }
 }
@@ -193,7 +190,7 @@ export default {
             line-height: 3;
         }
 
-        .follow_account{
+        .followAccount{
             font-size: 14px;
             color: #838383;
             line-height: 2;

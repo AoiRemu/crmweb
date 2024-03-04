@@ -1,7 +1,7 @@
 <template>
   <div class="form_warp">
     <el-form ref="form" :model="form" :rules="rules" label-width="80px" :inline="false" size="normal">
-      <el-form-item label="标签名称">
+      <el-form-item label="标签名称" prop="name">
         <el-input v-model="form.name" placeholder="请输入标签名称" />
       </el-form-item>
 
@@ -14,28 +14,72 @@
 </template>
 
 <script>
+import { Add, Update } from '@/api/tag'
 export default {
   props: {
     id: {
       type: Number,
       default: 0
+    },
+    name: {
+      type: String,
+      default: ''
     }
   },
   data() {
     return {
       form: {
-        name: ''
+        id: this.id,
+        name: this.name
       },
-      rules: {}
+      rules: {
+        name: [{ required: true, trigger: 'blur', message: '请输入标签名称' }]
+      }
     }
+  },
+  mounted() {
+
   },
   methods: {
     save() {
-      this.$message.success('保存成功')
-      this.cancel()
+      this.$refs.form.validate(valid => {
+        if (!valid) {
+          return
+        }
+
+        if (this.form.id > 0) {
+          this.update()
+        } else {
+          this.add()
+        }
+      })
     },
     cancel() {
       this.$emit('closeDialog')
+    },
+    add() {
+      Add(this.form).then(res => {
+        if (!res.isSuccess) {
+          this.$message.error(res.message)
+          return
+        }
+
+        this.$message.success(res.message)
+        this.cancel()
+        this.$emit('getTable')
+      })
+    },
+    update() {
+      Update(this.form).then(res => {
+        if (!res.isSuccess) {
+          this.$message.error(res.message)
+          return
+        }
+
+        this.$message.success(res.message)
+        this.cancel()
+        this.$emit('getTable')
+      })
     }
   }
 }

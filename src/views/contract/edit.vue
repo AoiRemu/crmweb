@@ -16,9 +16,9 @@
           <el-select v-model="form.state" placeholder="请选择状态" clearable>
             <el-option
               v-for="item in stateOptions"
-              :key="item"
-              :label="item"
-              :value="item"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
             />
           </el-select>
 
@@ -33,10 +33,14 @@
 </template>
 
 <script>
-import { Add } from '@/api/contract'
+import { Add, GetContractOptions, GetDetail, Update } from '@/api/contract'
 export default {
   props: {
     id: {
+      type: Number,
+      default: 0
+    },
+    customerid: {
       type: Number,
       default: 0
     }
@@ -44,42 +48,66 @@ export default {
   data() {
     return {
       form: {
+        customerId: this.customerid,
         amount: '',
         signTime: '',
         state: '拟定'
       },
       rules: {},
       activeNames: ['1'],
-      stateOptions: ['拟定', '谈判', '已签约', '签约失败', '已放款', '审批未通过', '客户退单']
+      stateOptions: []
     }
   },
   created() {
     if (this.id > 0) {
-      // this.getInfo()
+      this.getInfo()
     }
+
+    this.getStateOptions()
   },
   methods: {
     save() {
-      const param = {
-        id: this.customerid,
-        ...this.form
+      if (this.id > 0) {
+        this.update()
+      } else {
+        this.add()
       }
-      Add(param).then(res => {
-        console.log(res)
-        if (res.data.code === 200) {
-          this.$message.success(res.data.message)
+    },
+    add() {
+      Add(this.form).then(res => {
+        if (res.isSuccess) {
+          this.$message.success(res.message)
           this.cancel()
+          this.$emit('getTable')
+        } else {
+          this.$message.error(res.message)
+        }
+      })
+    },
+    update() {
+      Update(this.form).then(res => {
+        if (res.isSuccess) {
+          this.$message.success(res.message)
+          this.cancel()
+          this.$emit('getTable')
+        } else {
+          this.$message.error(res.message)
         }
       })
     },
     cancel() {
       this.$emit('closeDialog')
+    },
+    getStateOptions() {
+      GetContractOptions().then(res => {
+        this.stateOptions = res
+      })
+    },
+    getInfo() {
+      GetDetail(this.id).then(res => {
+        this.form = res
+      })
     }
-    // getInfo() {
-    //   GetDetail(this.id).then(res => {
-    //     this.form = res.data
-    //   })
-    // }
   }
 }
 </script>

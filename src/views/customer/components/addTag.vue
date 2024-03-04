@@ -5,9 +5,9 @@
         v-for="item in tableData"
         :key="item.id"
         v-model="item.isChecked"
-        :true-label="item.id"
         border
         size="small"
+        @change="handleChange"
       >{{ item.name }}</el-checkbox>
     </div>
     <div class="btn_warp">
@@ -38,8 +38,10 @@ export default {
   },
   methods: {
     getTable() {
-      GetTableData().then(res => {
-        this.tableData = res.data.data
+      GetTableData({}).then(res => {
+        this.tableData = res.data
+
+        // this.setTagChecked()
       })
     },
     setTagChecked() {
@@ -56,6 +58,9 @@ export default {
     },
     close() {
       this.$emit('closeDialog')
+    },
+    handleChange() {
+      console.log(this.tableData)
     }
   }
 }

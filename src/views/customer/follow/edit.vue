@@ -3,7 +3,7 @@
     <el-form ref="form" :model="form" :rules="rules" label-width="80px" :inline="true" size="small">
       <el-form-item label="" prop="message">
         <el-date-picker
-          v-model="form.next_follow_time"
+          v-model="form.nextFollowTime"
           type="datetime"
           placeholder="下次跟进时间"
           align="right"
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { Add } from '@/api/follow'
 export default {
   props: {
     customerid: {
@@ -33,14 +34,29 @@ export default {
     return {
       form: {
         message: '',
-        next_follow_time: ''
+        nextFollowTime: '',
+        customerId: this.customerid
       },
       rules: {}
     }
   },
   methods: {
     save() {
+      Add(this.form).then(res => {
+        if (!res.isSuccess) {
+          this.$message.error(res.message)
+          return
+        }
 
+        this.$message.success(res.message)
+        this.resetForm()
+        this.$emit('getFollowTable')
+      })
+    },
+    resetForm() {
+      this.$refs.form.resetFields()
+      this.form.message = ''
+      this.form.nextFollowTime = ''
     }
   }
 }

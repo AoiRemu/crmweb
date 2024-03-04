@@ -71,7 +71,7 @@ export const constantRoutes = [
       {
         path: 'all',
         name: 'all',
-        redirect: 'index/0',
+        redirect: 'index',
         meta: { title: '所有客户' },
         component: () => import('@/views/customer/index')
       },
@@ -105,13 +105,20 @@ export const constantRoutes = [
     meta: { title: '合同管理', icon: 'el-icon-s-order' },
     children: [
       {
+        path: 'index/:state?',
+        name: 'table',
+        meta: { title: '合同列表' },
+        component: () => import('@/views/contract/index'),
+        hidden: true
+      },
+      {
         path: 'index',
         name: 'index',
         meta: { title: '所有合同' },
         component: () => import('@/views/contract/index')
       },
       {
-        path: 'done',
+        path: 'index/2',
         name: 'done',
         meta: { title: '签约合同' },
         component: () => import('@/views/contract/index')

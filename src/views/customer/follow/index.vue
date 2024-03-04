@@ -1,6 +1,6 @@
 <template>
   <div class="follow_warp">
-    <el-timeline :reverse="false">
+    <el-timeline :reverse="true">
       <el-timeline-item
         v-for="item in tableData"
         :key="item.id"
@@ -43,17 +43,11 @@ export default {
         pageSize: 10,
         pageIndex: 1
       },
-      tableData: [],
-      total: 0
+      tableData: []
     }
   },
   computed: {
-    noMore() {
-      return this.tableData.length >= this.total
-    },
-    disabled() {
-      return this.noMore || this.loading
-    }
+
   },
   created() {
     this.getTable()
@@ -63,11 +57,10 @@ export default {
       this.loading = true
       GetFollowTableData(this.customerid).then(res => {
         if (this.max) {
-          this.tableData = res.data.data.slice(0, this.max)
+          this.tableData = res.slice(0, this.max)
         } else {
-          this.tableData = res.data.data
+          this.tableData = res
         }
-        this.total = res.data.total
       }).finally(() => {
         this.loading = false
       })

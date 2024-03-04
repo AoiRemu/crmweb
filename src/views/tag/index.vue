@@ -2,12 +2,12 @@
   <div class="app-container">
     <div class="query_warp">
       <div class="nav_warp">
-        <el-button type="primary" size="default" @click="edit(0)">添加标签</el-button>
+        <el-button type="primary" size="default" @click="edit(0, '')">添加标签</el-button>
       </div>
       <div class="query_form">
         <el-form ref="form" :model="queryForm" :rules="rules" label-width="80px" :inline="true" size="normal">
           <el-form-item label="标签名">
-            <el-input v-model="queryForm.name" placeholder="" />
+            <el-input v-model="queryForm.name" placeholder="" clearable />
           </el-form-item>
           <el-form-item lable=" ">
             <el-button type="primary" @click="getTable">查询</el-button>
@@ -23,8 +23,8 @@
         <el-table-column label="操作">
           <template slot-scope="scope">
             <div>
-              <el-button type="text" size="default" @click="edit(scope.row.id)">编辑</el-button>
-              <el-button type="text" size="default" @click="remove(scope.row.id)">删除</el-button>
+              <el-button type="text" size="default" @click="edit(scope.row.id, scope.row.name)">编辑</el-button>
+              <!-- <el-button type="text" size="default" @click="remove(scope.row.id)">删除</el-button> -->
             </div>
           </template>
         </el-table-column>
@@ -45,14 +45,14 @@
     </div>
 
     <el-dialog
-      title="添加标签"
+      :title="editTitle"
       :visible.sync="visible"
       width="20%"
       :close-on-click-modal="false"
       :destroy-on-close="true"
       @close="visible = false"
     >
-      <Edit :id="id" ref="Edit" @closeDialog="visible = false" />
+      <Edit v-if="visible" :id="editForm.id" ref="Edit" :name="editForm.name" @getTable="getTable" @closeDialog="visible = false" />
     </el-dialog>
   </div>
 </template>
@@ -69,7 +69,8 @@ export default {
       queryForm: {
         name: '',
         pageSize: 10,
-        pageIndex: 1
+        pageIndex: 1,
+        isPage: true
       },
       rules: {},
       tableData: [],
@@ -77,7 +78,11 @@ export default {
       loading: false,
 
       visible: false,
-      id: 0
+      editForm: {
+        id: 0,
+        name: ''
+      },
+      editTitle: ''
     }
   },
   created() {
@@ -86,9 +91,9 @@ export default {
   methods: {
     getTable() {
       this.loading = true
-      GetTableData().then(res => {
-        this.tableData = res.data.data
-        this.total = res.data.total
+      GetTableData(this.queryForm).then(res => {
+        this.tableData = res.data
+        this.total = res.total
       }).finally(() => {
         this.loading = false
       })
@@ -97,9 +102,11 @@ export default {
       this.queryForm.pageSize = val
       this.getTable()
     },
-    edit(id) {
-      this.id = id
+    edit(id, name) {
+      this.editForm.id = id
+      this.editForm.name = name
       this.visible = true
+      this.editTitle = id === 0 ? '添加标签' : '编辑标签'
     },
     remove(id) {
 

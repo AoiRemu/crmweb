@@ -10,7 +10,7 @@
           <el-form-item label="客户名称">
             <el-input v-model="queryForm.name" placeholder="请输入客户名称" />
           </el-form-item>
-          <el-form-item v-if="searchType === 1" label="客户分组">
+          <el-form-item v-if="queryForm.state === 1" label="客户分组">
             <el-select v-model="queryForm.groupId" placeholder="请选择客户分组" clearable filterable>
               <el-option
                 v-for="item in groupOptions"
@@ -73,19 +73,19 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="标签" prop="county">
+        <el-table-column label="标签" prop="tags">
           <template v-slot="scope">
             <div class="tag_warp">
               <el-tag v-for="item in scope.row.tags" :key="item.id" disable-transitions type="" effect="dark">{{ item.name }}</el-tag>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="客户进展" prop="follow_state" />
-        <el-table-column label="跟进人" prop="follow_account" width="120px" />
-        <el-table-column label="下次跟进时间" prop="next_follow_time">
+        <el-table-column label="客户进展" prop="followState" />
+        <el-table-column label="跟进人" prop="followAccount" width="120px" />
+        <el-table-column label="下次跟进时间" prop="nextFollowTime">
           <template v-slot="scope">
-            <div :class="{ itstime: itstime(scope.row.next_follow_time) }">
-              {{ scope.row.next_follow_time }}
+            <div :class="{ itstime: itstime(scope.row.nextFollowTime) }">
+              {{ scope.row.nextFollowTime }}
             </div>
           </template>
         </el-table-column>
@@ -138,33 +138,46 @@
       :destroy-on-close="true"
       @close="visible = false"
     >
-      <Info :id="0" ref="Info" @closeDialog="visible=false" />
+      <Info :id="0" ref="Info" @closeDialog="visible=false" @getTable="getTable" />
     </el-dialog>
 
+    <el-dialog
+      title="批量分组"
+      :visible.sync="batchVisible"
+      width="480px"
+      top="50px"
+      :close-on-click-modal="false"
+      :destroy-on-close="true"
+      @close="batchVisible = false"
+    >
+      <BatchGroup ref="Info" :customer-id-array="customerIdArray" @closeDialog="batchVisible=false" @getTable="getTable" />
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Info from './info.vue'
-import { GetTable } from '@/api/customer'
+import { GetTable, GiveUp, Allot } from '@/api/customer'
 import { GetOptions } from '@/api/group'
 import Detail from './detail.vue'
 import RateStar from '@/components/Customer/rateStar.vue'
 import { hidePhone } from '@/utils/common'
 import AvatarCard from '@/components/Customer/customerCard.vue'
+import BatchGroup from './components/batchGroup'
 export default {
   components: {
     Info,
     Detail,
     RateStar,
-    AvatarCard
+    AvatarCard,
+    BatchGroup
   },
   data() {
     return {
-      searchType: 0,
       queryForm: {
         name: '',
         groupId: '',
+        state: this.$route.params.type ? +this.$route.params.type : '',
         pageSize: 10,
         pageIndex: 1
       },
@@ -179,12 +192,14 @@ export default {
       visible: false,
 
       detailId: 0,
-      detailVisible: false
+      detailVisible: false,
+
+      batchVisible: false,
+      customerIdArray: []
 
     }
   },
   created() {
-    this.searchType = this.$route.params.type ? +this.$route.params.type : 0
     this.getTable()
     this.getGroupOptions()
   },
@@ -192,23 +207,16 @@ export default {
 
   },
   methods: {
-    mockTable(list) {
-      list.forEach(element => {
-        element.state = this.searchType
-      })
-    },
     getTable() {
       GetTable(this.queryForm).then(res => {
-        const list = res.data.data
-        this.mockTable(list)
+        const list = res.data
         this.tableData = list
-        this.total = res.data.total
+        this.total = res.total
       })
     },
     getGroupOptions() {
-      const params = {}
-      GetOptions(params).then(res => {
-        this.groupOptions = res.data.data
+      GetOptions({}).then(res => {
+        this.groupOptions = res
       })
     },
     sizeChange(val) {
@@ -222,17 +230,38 @@ export default {
       this.visible = true
     },
     batchGroup() {
-      console.log(this.$refs.table.selection)
+      const selection = this.$refs.table.selection
+      if (selection.length === 0) {
+        this.$message.warning('请选择要分组的客户')
+        return
+      }
+
+      this.customerIdArray = selection.map(a => a.id)
+      this.batchVisible = true
     },
     detail(id) {
       this.detailId = id
       this.detailVisible = true
     },
     giveup(id) {
-      this.$message.success('客户已放回公海')
+      GiveUp(id).then(res => {
+        if (!res.isSuccess) {
+          this.$message.error(res.message)
+          return
+        }
+        this.$message.success('客户已放回公海')
+        this.getTable()
+      })
     },
     allot(id) {
-      this.$message.success('认领客户成功')
+      Allot(id).then(res => {
+        if (!res.isSuccess) {
+          this.$message.error(res.message)
+          return
+        }
+        this.$message.success('认领客户成功')
+        this.getTable()
+      })
     },
     showGroupName(id) {
       return this.groupOptions.find(ele => ele.id === id)?.name
@@ -243,7 +272,7 @@ export default {
     },
     itstime(time) {
       const now = new Date()
-      return now >= time
+      return now >= new Date(time)
     }
   }
 }

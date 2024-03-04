@@ -16,10 +16,13 @@
         <el-card shadow="hover">
           <div class="content_warp">
             <div class="title_warp">
-              <div>{{ item.accountName }}</div>
+              <div>{{ item.account }}</div>
               <div>合同状况</div>
             </div>
-            <div class="message">{{ item.state }}</div>
+            <div class="message">
+              <div>状态：{{ item.stateDesc }}</div>
+              <div>金额：{{ item.amount }}</div>
+            </div>
           </div>
         </el-card>
       </el-timeline-item>
@@ -71,11 +74,11 @@ export default {
       this.loading = true
       GetCustomerContract(this.customerid).then(res => {
         if (this.max) {
-          this.tableData = res.data.data.slice(0, this.max)
+          this.tableData = res.data.slice(0, this.max)
         } else {
-          this.tableData = res.data.data
+          this.tableData = res.data
         }
-        this.total = res.data.total
+        this.total = res.total
       }).finally(() => {
         this.loading = false
       })

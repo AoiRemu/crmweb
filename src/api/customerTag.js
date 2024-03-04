@@ -1,15 +1,15 @@
 import request from '@/utils/request'
 
-export function GetFollowTableData(customerId) {
+export function GetCustomerTagList(id) {
   return request({
-    url: `/api/FollowUpLog/Customer/${customerId}`,
+    url: `/api/CustomerTag/GetCustomerTagList/${id}`,
     method: 'get'
   })
 }
 
 export function Add(params) {
   return request({
-    url: `/api/FollowUpLog/Add`,
+    url: `/api/CustomerTag/Add`,
     method: 'post',
     data: params
   })

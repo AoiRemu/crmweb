@@ -7,9 +7,26 @@ export function GetCustomerTags(customerId) {
   })
 }
 
-export function GetTableData() {
+export function GetTableData(params) {
   return request({
-    url: `/api/Tag/GetTable`,
-    method: 'get'
+    url: `/api/Tag/SearchList`,
+    method: 'post',
+    data: params
+  })
+}
+
+export function Add(params) {
+  return request({
+    url: `/api/Tag/Add`,
+    method: 'post',
+    data: params
+  })
+}
+
+export function Update(params) {
+  return request({
+    url: `/api/Tag/Update`,
+    method: 'put',
+    data: params
   })
 }

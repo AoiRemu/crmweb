@@ -9,19 +9,26 @@
                 <el-input v-model="form.main.name" placeholder="请输入客户名称" />
               </el-form-item>
               <el-form-item label="性别" prop="gender">
-                <el-radio v-model="form.main.gender" label="male">男</el-radio>
-                <el-radio v-model="form.main.gender" label="female">女</el-radio>
-                <el-radio v-model="form.main.gender" label="unknown">未知</el-radio>
+                <el-radio v-model="form.main.gender" :label="1">男</el-radio>
+                <el-radio v-model="form.main.gender" :label="2">女</el-radio>
+                <el-radio v-model="form.main.gender" :label="0">未知</el-radio>
               </el-form-item>
               <el-form-item label="星级" prop="level">
-                <el-input v-model="form.main.level" placeholder="请输入星级" />
+                <RateStar v-model="form.main.level" :disabled="false" />
               </el-form-item>
 
               <el-form-item label="来源" prop="source">
                 <el-input v-model="form.main.source" placeholder="请输入来源" />
               </el-form-item>
-              <el-form-item label="分组" prop="group">
-                <el-input v-model="form.main.group" placeholder="请选择分组" />
+              <el-form-item label="分组" prop="groupId">
+                <el-select v-model="form.main.groupId" placeholder="请选择客户分组" clearable filterable>
+                  <el-option
+                    v-for="item in groupOptions"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  />
+                </el-select>
               </el-form-item>
 
               <el-form-item label="微信" prop="wechat">
@@ -76,15 +83,21 @@
       </el-form>
       <div class="btn_warp">
         <el-button type="primary" size="default" @click="save">确定</el-button>
-        <el-button size="default" @click="cancel">取消</el-button>
+        <el-button v-if="id === 0" size="default" @click="cancel">取消</el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { GetDetail } from '@/api/customer'
+import { GetDetail, Add, Update } from '@/api/customer'
+import RateStar from '@/components/Customer/rateStar.vue'
+import { GetOptions } from '@/api/group'
+import { GetInfoDetail } from '@/api/customerInfo'
 export default {
+  components: {
+    RateStar
+  },
   props: {
     id: {
       type: Number,
@@ -95,11 +108,12 @@ export default {
     return {
       form: {
         main: {
+          id: '',
           name: '',
-          gender: 'unknown',
-          level: '',
+          gender: 0,
+          level: 0,
           source: '',
-          group: '',
+          groupId: '',
           wechat: '',
           qq: '',
           phone: '',
@@ -110,6 +124,8 @@ export default {
           qualification: ''
         },
         info: {
+          id: '',
+          customerId: '',
           birthday: '',
           position: '',
           industry: '',
@@ -119,24 +135,59 @@ export default {
         }
       },
       rules: {},
-      activeNames: ['1']
+      activeNames: ['1'],
+      groupOptions: []
     }
   },
   created() {
+    this.getGroupOptions()
     if (this.id > 0) {
       this.getInfo()
     }
   },
   methods: {
     save() {
-
+      // this.$refs.form.validate()
+      if (this.id > 0) {
+        this.update()
+      } else {
+        this.add()
+      }
+    },
+    add() {
+      Add(this.form).then(res => {
+        if (!res.isSuccess) {
+          this.$message.error(res.message)
+          this.$emit('getTable')
+          return
+        }
+        this.$message.success(res.message)
+      })
+    },
+    update() {
+      Update(this.form).then(res => {
+        if (!res.isSuccess) {
+          this.$message.error(res.message)
+          this.$emit('getTable')
+          return
+        }
+        this.$message.success(res.message)
+      })
     },
     cancel() {
       this.$emit('closeDialog')
     },
     getInfo() {
       GetDetail(this.id).then(res => {
-        this.form = res.data
+        this.form.main = res
+      })
+      GetInfoDetail(this.id).then(res => {
+        this.form.info = res
+      })
+    },
+    getGroupOptions() {
+      GetOptions({}).then(res => {
+        this.groupOptions = res
       })
     }
   }
@@ -147,4 +198,12 @@ export default {
 .btn_warp{
   margin-top:20px;
 }
+
+::v-deep  .el-select {
+  width: 100%;
+  .el-input__inner {
+    width: 100%;
+  }
+}
+
 </style>

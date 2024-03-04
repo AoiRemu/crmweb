@@ -1,5 +1,5 @@
-import { login, logout, getInfo } from '@/api/user'
-import { getToken, setToken, removeToken } from '@/utils/auth'
+import { login } from '@/api/user'
+import { getToken, setToken, removeToken, setUserData, getUserData, removeUserData } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
 const getDefaultState = () => {
@@ -33,6 +33,7 @@ const mutations = {
     state.account = userInfo.account
     state.id = userInfo.id
     state.roles = userInfo.roles
+    setUserData(userInfo)
   }
 }
 
@@ -42,7 +43,6 @@ const actions = {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ account: username.trim(), password: password }).then(response => {
-        console.log(response)
         if (!response.isSuccess) {
           reject(response.message)
         }
@@ -60,35 +60,32 @@ const actions = {
   // get user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
-      getInfo(state.token).then(response => {
-        // todo 解析token参数
-        const { data } = response
-
-        if (!data) {
-          return reject('Verification failed, please Login again.')
-        }
-
-        const { name, avatar } = data
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        resolve(data)
-      }).catch(error => {
-        reject(error)
-      })
+      const userData = getUserData()
+      if (!userData) {
+        reject('请重新登录')
+      }
+      commit('SET_NAME', userData.name)
+      resolve(userData)
     })
   },
 
   // user logout
   logout({ commit, state }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
-        removeToken() // must remove  token  first
-        resetRouter()
-        commit('RESET_STATE')
-        resolve()
-      }).catch(error => {
-        reject(error)
-      })
+      // logout(state.token).then(() => {
+      //   removeToken() // must remove  token  first
+      //   resetRouter()
+      //   commit('RESET_STATE')
+      //   resolve()
+      // }).catch(error => {
+      //   reject(error)
+      // })
+
+      removeToken() // must remove  token  first
+      removeUserData()
+      resetRouter()
+      commit('RESET_STATE')
+      resolve()
     })
   },
 
@@ -96,6 +93,7 @@ const actions = {
   resetToken({ commit }) {
     return new Promise(resolve => {
       removeToken() // must remove  token  first
+      removeUserData()
       commit('RESET_STATE')
       resolve()
     })
