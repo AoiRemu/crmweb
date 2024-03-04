@@ -51,7 +51,7 @@
                 <el-input v-model="form.main.address" placeholder="请输入地址" />
               </el-form-item>
               <el-form-item label="资质" prop="qualification">
-                <el-input v-model="form.main.qualification" type="textarea" placeholder="请输入资质" />
+                <el-input v-model="form.main.qualification" :rows="4" type="textarea" placeholder="请输入资质" />
               </el-form-item>
             </div>
           </el-collapse-item>

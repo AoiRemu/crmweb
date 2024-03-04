@@ -14,3 +14,11 @@ export function Add(params) {
     data: params
   })
 }
+
+export function UpdateCustomerTags(params) {
+  return request({
+    url: `/api/CustomerTag/UpdateCustomerTags`,
+    method: 'post',
+    data: params
+  })
+}

@@ -21,11 +21,16 @@
 
 <script>
 import { GetTableData } from '@/api/tag'
+import { UpdateCustomerTags } from '@/api/customerTag'
 export default {
   props: {
     customerTags: {
       type: Array,
       default: () => []
+    },
+    customerid: {
+      type: Number,
+      default: 0
     }
   },
   data() {
@@ -54,7 +59,22 @@ export default {
       })
     },
     save() {
-      this.close()
+      const selection = this.tableData.filter(ele => ele.isChecked === true)
+      const idList = selection.map(ele => ele.id)
+      const params = {
+        customerId: this.customerid,
+        tagIdList: idList
+      }
+      UpdateCustomerTags(params).then(res => {
+        if (!res.isSuccess) {
+          this.$message.error(res.message)
+          return
+        }
+
+        this.$message.success(res.message)
+        this.$emit('getTagList')
+        this.close()
+      })
     },
     close() {
       this.$emit('closeDialog')

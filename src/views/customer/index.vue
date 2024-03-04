@@ -2,7 +2,20 @@
   <div class="app-container">
     <div class="query_warp">
       <div class="nav_warp">
-        <el-button type="primary" size="small" @click="importData">导入客户数据</el-button>
+        <el-upload
+          ref="upload"
+          style="margin-right: 10px;"
+          :action="uploadUrl"
+          :on-success="handleSuccess"
+          :on-error="handleError"
+          :auto-upload="true"
+          :show-file-list="false"
+          :headers="uploadHeader"
+          accept=".xlsx"
+        >
+          <el-button type="primary" size="small" @click="importData">导入客户数据</el-button>
+        </el-upload>
+
         <el-button type="primary" size="small" @click="add">添加客户</el-button>
       </div>
       <div class="query_form">
@@ -157,13 +170,14 @@
 
 <script>
 import Info from './info.vue'
-import { GetTable, GiveUp, Allot } from '@/api/customer'
+import { GetTable, GiveUp, Allot, UploadUrl } from '@/api/customer'
 import { GetOptions } from '@/api/group'
 import Detail from './detail.vue'
 import RateStar from '@/components/Customer/rateStar.vue'
 import { hidePhone } from '@/utils/common'
 import AvatarCard from '@/components/Customer/customerCard.vue'
 import BatchGroup from './components/batchGroup'
+import { getToken } from '@/utils/auth'
 export default {
   components: {
     Info,
@@ -195,9 +209,17 @@ export default {
       detailVisible: false,
 
       batchVisible: false,
-      customerIdArray: []
-
+      customerIdArray: [],
+      uploadHeader: {
+        Authorization: 'Bearer ' + getToken()
+      }
     }
+  },
+  computed: {
+    uploadUrl() {
+      return UploadUrl
+    }
+
   },
   created() {
     this.getTable()
@@ -273,6 +295,18 @@ export default {
     itstime(time) {
       const now = new Date()
       return now >= new Date(time)
+    },
+    handleSuccess(response, file, fileList) {
+      if (!response.isSuccess) {
+        this.$message.error(response.message)
+        return
+      }
+
+      this.$message.success(response.message)
+      this.getTable()
+    },
+    handleError(error, file, fileList) {
+      this.$message.error(error.toString())
     }
   }
 }

@@ -67,7 +67,7 @@
       :close-on-click-modal="false"
       @close="tagVisible = false"
     >
-      <AddTag :customer-tags="tagList" @closeDialog="tagVisible = false" />
+      <AddTag :customer-tags="tagList" :customerid="id" @getTagList="getTags" @closeDialog="tagVisible = false" />
     </el-dialog>
 
   </div>

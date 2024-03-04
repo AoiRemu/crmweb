@@ -1,4 +1,4 @@
-import request from '@/utils/request'
+import request, { BaseURL } from '@/utils/request'
 
 export function GetTable(params) {
   return request({
@@ -78,3 +78,5 @@ export function BatchUpdateGroup(params) {
     data: params
   })
 }
+
+export const UploadUrl = BaseURL + `/api/CustomerMain/ImportCustomers`
