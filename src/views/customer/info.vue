@@ -108,12 +108,12 @@ export default {
     return {
       form: {
         main: {
-          id: '',
+          id: 0,
           name: '',
           gender: 0,
           level: 0,
           source: '',
-          groupId: '',
+          groupId: 0,
           wechat: '',
           qq: '',
           phone: '',
@@ -124,8 +124,8 @@ export default {
           qualification: ''
         },
         info: {
-          id: '',
-          customerId: '',
+          id: 0,
+          customerId: 0,
           birthday: '',
           position: '',
           industry: '',
@@ -158,20 +158,21 @@ export default {
       Add(this.form).then(res => {
         if (!res.isSuccess) {
           this.$message.error(res.message)
-          this.$emit('getTable')
           return
         }
         this.$message.success(res.message)
+        this.$emit('getTable')
+        this.cancel()
       })
     },
     update() {
       Update(this.form).then(res => {
         if (!res.isSuccess) {
           this.$message.error(res.message)
-          this.$emit('getTable')
           return
         }
         this.$message.success(res.message)
+        this.$emit('getTable')
       })
     },
     cancel() {

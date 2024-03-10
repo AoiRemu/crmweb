@@ -93,7 +93,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="客户进展" prop="followState" />
+        <el-table-column label="客户进展" prop="followStateDesc" />
         <el-table-column label="跟进人" prop="followAccount" width="120px" />
         <el-table-column label="下次跟进时间" prop="nextFollowTime">
           <template v-slot="scope">
@@ -103,11 +103,12 @@
           </template>
         </el-table-column>
         <el-table-column label="创建时间" prop="ctime" />
+        <el-table-column label="客户状态" prop="stateDesc" />
         <el-table-column label="操作">
           <template slot-scope="scope">
             <div>
-              <el-button v-if="scope.row.state!==2" type="text" size="default" @click="giveup(scope.row.id)">放弃</el-button>
-              <el-button v-if="scope.row.state===2" type="text" size="default" @click="allot(scope.row.id)">认领</el-button>
+              <el-button v-if="scope.row.state===1 || scope.row.state===3" type="text" size="default" @click="giveup(scope.row.id)">放弃</el-button>
+              <el-button v-if="scope.row.state===2 || scope.row.state===0" type="text" size="default" @click="allot(scope.row.id)">认领</el-button>
               <el-button type="text" size="default" @click="detail(scope.row.id)">详情</el-button>
 
             </div>
@@ -132,7 +133,7 @@
         title="客户详情"
         :visible.sync="detailVisible"
         direction="rtl"
-        size="30%"
+        size="720px"
         :destroy-on-close="true"
         :show-close="true"
         :wrapper-closable="false"

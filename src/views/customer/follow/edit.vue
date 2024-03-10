@@ -11,7 +11,7 @@
 
       </el-form-item>
       <el-form-item label="" prop="message">
-        <el-input v-model="form.message" placeholder="添加跟进记录" />
+        <el-input v-model="form.message" :rows="4" type="textarea" placeholder="添加跟进记录" />
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="save">确定</el-button>
@@ -64,5 +64,9 @@ export default {
 
 <style lang="scss" scoped>
 ::v-deep .el-input__inner{
+}
+
+::v-deep .el-textarea__inner{
+  width: 280px;
 }
 </style>

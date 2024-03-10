@@ -24,12 +24,25 @@ module.exports = {
    * In most cases please use '/' !!!
    * Detail: https://cli.vuejs.org/config/#publicpath
    */
-  publicPath: process.env.NODE_ENV === 'production' ? '/crmweb/' : '/',
+  // publicPath: process.env.NODE_ENV === 'production' ? '/crmweb/' : '/',
+  publicPath: '/',
   outputDir: 'dist',
   assetsDir: 'static',
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
+    // proxy: {
+    //   '/api': {
+    //     // 此处的写法，目的是为了 将 /api 替换成 https://www.baidu.com/
+    //     target: process.env.VUE_APP_BASE_API,
+    //     // 允许跨域
+    //     changeOrigin: true,
+    //     ws: true,
+    //     pathRewrite: {
+    //       '^/api': '/api'
+    //     }
+    //   }
+    // },
     port: port,
     open: true,
     overlay: {
